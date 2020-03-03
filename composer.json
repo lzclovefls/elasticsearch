@@ -11,8 +11,10 @@
             "email": "2563958505@qq.com"
         }
     ],
-    "minimum-stability": "dev",
     "require": {
         "elasticsearch/elasticsearch": "~7.0"
+    },
+    "autoload": {
+        "psr-4": {"Elasticsearch\\": "src/Elasticsearch"}
     }
 }
