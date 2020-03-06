@@ -11,6 +11,8 @@ class Operation
     protected $size = '';  //每页显示个数
     protected $from = 0;   //偏移位置
 
+    protected $type = 1; //获取类型：1 获取全部数据 2 获取分页数组
+
     protected $index = '';  //索引
     protected $client = '';  //客户端
     protected $hosts = array(); //主机位置
@@ -138,7 +140,9 @@ class Operation
      * 获取数据
      * @return mixed
      */
-    public function get(){
+    public function get($type=1){
+
+        $aggs = $type
 
         //设置查询信息
         $params = [
@@ -159,7 +163,7 @@ class Operation
                     ]
                 ],
                 "sort"=> $this->sort,
-                "aggs" => ["total" => [ "value_count" => [ "field" =>  ]]]
+                "aggs" => ["total" => [ "value_count" => [ "field" => $this->index_field ]]]
             ]
         ];
 
@@ -186,7 +190,9 @@ class Operation
         $res = $this->get();
 
         $data['data'] = $res['data'];
-        $data
+        $data['page'] = $page;
+        $data['size'] = $size;
+        $data['total'] = $res['total'];
 
 
     }
