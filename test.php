@@ -13,4 +13,4 @@ $client = new Operation($config);
 
 $res = $client->where('sid','1000202002205195092900')->page(20)->select();
 
-var_dump($res);die;
+var_dump($res);

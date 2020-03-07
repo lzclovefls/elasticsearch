@@ -140,9 +140,9 @@ class Operation
      * 获取数据
      * @return mixed
      */
-    public function get($type=1){
+    public function get(){
 
-        $aggs = $type
+        $aggs = $this->type==2?["total" => [ "value_count" => [ "field" => $this->index_field ]]]:[];
 
         //设置查询信息
         $params = [
@@ -163,7 +163,7 @@ class Operation
                     ]
                 ],
                 "sort"=> $this->sort,
-                "aggs" => ["total" => [ "value_count" => [ "field" => $this->index_field ]]]
+                "aggs" => $aggs
             ]
         ];
 
@@ -186,6 +186,8 @@ class Operation
 
         $this->size = $size;
         $this->from = ($page-1)*$size;
+
+        $this->type = 2;
 
         $res = $this->get();
 
