@@ -86,7 +86,6 @@ class Operation
                 break;
         }
 
-        $this->must = $range;
 
         return $this;
 
