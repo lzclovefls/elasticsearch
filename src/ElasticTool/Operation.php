@@ -170,7 +170,12 @@ class Operation
         $data['data'] = array_column($res['hits']['hits'],'_source');
         $data['total'] = $res['hits']['total']['value'];
 
-        return $data['data'];
+        if($this->type==1){
+            return $data['data'];
+        }else{
+            return $data;
+        }
+
     }
 
 
