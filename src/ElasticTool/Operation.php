@@ -193,6 +193,7 @@ class Operation
         $data['size'] = $size;
         $data['total'] = $res['total'];
 
+        return $data;
 
     }
 

@@ -11,6 +11,9 @@ $config['index'] = 'sms_send_log';
 
 $client = new Operation($config);
 
-$res = $client->where('sid','1000202002205195092900');
+$where = array();
+$where[] = array('sid','in',array('1000202002205195092900'));
+
+$res = $client->where($where)->pageGet(10);
 
 var_dump($res);
