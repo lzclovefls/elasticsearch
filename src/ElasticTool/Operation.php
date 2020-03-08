@@ -71,7 +71,7 @@ class Operation
                     break;
             }
         }
-        $where['range'] = $range;
+        $where[]['range'] = $range;
 
         //根据类型设置条件全局变量
         switch ($type){
