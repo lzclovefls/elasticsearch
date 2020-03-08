@@ -4,7 +4,7 @@
     "type": "library",
     "require-dev": {
     },
-    "license": "GPL-3.0+",
+    "license": "MIT",
     "authors": [
         {
             "name": "lzc",
@@ -12,9 +12,10 @@
         }
     ],
     "require": {
+        "php": ">=7.1.0",
         "elasticsearch/elasticsearch": "~7.0"
     },
     "autoload": {
-        "psr-4": {"Elasticsearch\\": "src/Elasticsearch"}
+        "psr-4": {"ElasticTool\\": "src/ElasticTool"}
     }
 }

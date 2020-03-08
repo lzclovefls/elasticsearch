@@ -1,10 +1,7 @@
 <?php
-namespace Elasticsearch;
+namespace ElasticTool;
 
-use function Sodium\library_version_major;
-
-require __DIR__.'/../../vendor/autoload.php';
-
+use Elasticsearch\ClientBuilder;
 
 class Operation
 {
