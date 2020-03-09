@@ -170,7 +170,10 @@ class Operation
 
         //获取数据和总数
         $data['data'] = array_column($res['hits']['hits'],'_source');
-        $data['total'] = $res['hits']['total']['value'];
+        if($this->type==2){
+            $data['total'] = $res['hits']['total']['value'];
+        }
+
 
         if($this->type==1){
             return $data['data'];
