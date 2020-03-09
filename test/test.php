@@ -8,6 +8,7 @@ $config['hosts'] = [
 ];
 
 $config['index'] = 'sms_send_log';
+$config['index_field'] = 'sid';
 
 $client = new Operation($config);
 
