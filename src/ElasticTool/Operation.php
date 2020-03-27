@@ -17,7 +17,16 @@ class Operation extends Base
 
     public function add($data){
 
-        $params = $this->setAddParams($data);
+        $params = $this->getParams($data,'create');
+
+        $response = $this->client->bulk($params);
+
+        return $response;
+    }
+
+    public function addOrUpdate($data){
+
+        $params = $this->getParams($data,'index');
 
         $response = $this->client->bulk($params);
 
@@ -27,160 +36,97 @@ class Operation extends Base
 
     public function update($data){
 
-        $params = $this->setUpdateParams($data);
+        $params = $this->getParams($data,'update');
 
         $response = $this->client->bulk($params);
 
         return $response;
     }
 
-    public function del($data){
+    public function delete($data){
 
-        $params = $this->setDelParams($data);
+        $params = $this->getParams($data,'delete');
+
+        $response = $this->client->bulk($params);
+
+        return $response;
 
     }
 
-    private function setDelParams($data){
 
+
+    /**
+     * 获取参数信息
+     * @param $data
+     * @param string $type
+     */
+    public function getParams($data,$type='index'){
+
+        $params = array();
         //判断是否为多维数组
         if(count($data) == count($data,1)){
 
-            $index = array();
-            $index['_index'] = $this->index;
-
-            //判断是否有添加
-            if($data['index_id']){
-                $index['_id'] = $data['index_id'];
-                unset($data['index_id']);
-            }else{
-                return self::NOT_INDEX_ID;
-            }
-
-            $params['body'][] = [
-                'delete' => $index
-            ];
-
+            $this->setParams($data,$type,$params);
 
         }else {
 
+
             foreach ($data as $v){
 
-                $index = array();
-                $index['_index'] = $this->index;
-
-                //判断是否有添加索引id
-                if($data['index_id']){
-                    $index['_id'] = $data['index_id'];
-                    unset($data['index_id']);
-                }else{
-                    return self::NOT_INDEX_ID;
-                }
-
-                $params['body'][] = [
-                    'delete' => $index
-                ];
-
+                $this->setParams($v,$type,$params);
             }
         }
 
         return $params;
-
     }
 
 
-    private function setUpdateParams($data){
+    /**
+     * 设置参数信息
+     * @param $data
+     * @param $type
+     * @param $params
+     * @return mixed
+     */
+    public function setParams($data,$type,&$params){
 
+        $index = array();
+        $index['_index'] = $this->index;
 
-        //判断是否为多维数组
-        if(count($data) == count($data,1)){
+        //判断是否有添加索引id
+        if($data['index_id']){
+            $index['_id'] = $data['index_id'];
+            unset($data['index_id']);
+        }else{
+            $this->returnError('NOT_FOUND_INDEX');
+        }
 
-            $index = array();
-            $index['_index'] = $this->index;
-
-            //判断是否有添加
-            if($data['index_id']){
-                $index['_id'] = $data['index_id'];
-                unset($data['index_id']);
-            }else{
-                return self::NOT_INDEX_ID;
-            }
-
-            $params['body'][] = [
-                'update' => $index
-            ];
-            $params['body'][] = $data;
-
-        }else {
-
-            foreach ($data as $v){
-
-                $index = array();
-                $index['_index'] = $this->index;
-
-                //判断是否有添加索引id
-                if($data['index_id']){
-                    $index['_id'] = $data['index_id'];
-                    unset($data['index_id']);
-                }else{
-                    return self::NOT_INDEX_ID;
-                }
-
+        //根据类型进行处理
+        switch($type){
+            case 'index':
+            case 'create':
                 $params['body'][] = [
-                    'update' => $index
+                    $type => $index
                 ];
                 $params['body'][] = $data;
-
-            }
-        }
-
-        return $params;
-
-    }
-
-
-    private function setAddParams($data){
-
-        //判断是否为多维数组
-        if(count($data) == count($data,1)){
-
-            $index = array();
-            $index['_index'] = $this->index;
-
-            //判断是否有添加
-            if($data['index_id']){
-                $index['_id'] = $data['index_id'];
-                unset($data['index_id']);
-            }
-
-            $params['body'][] = [
-                'index' => $index
-            ];
-            $params['body'][] = $data;
-
-        }else {
-
-            foreach ($data as $v){
-
-                $index = array();
-                $index['_index'] = $this->index;
-
-                //判断是否有添加索引id
-                if($data['index_id']){
-                    $index['_id'] = $data['index_id'];
-                    unset($data['index_id']);
-                }
-
+                break;
+            case 'update':
                 $params['body'][] = [
-                    'index' => $index
+                    $type => $index
                 ];
-                $params['body'][] = $data;
-
-            }
+                $params['body'][] = ['doc'=>$data];
+                break;
+            case 'delete':
+                $params['body'][] = [
+                    $type => $index
+                ];
+                break;
         }
-
 
         return $params;
     }
+
+
 
 
 }

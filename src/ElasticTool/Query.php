@@ -8,6 +8,8 @@ class Query extends Base
 
     protected $type = 1; //获取类型：1 获取全部数据 2 获取分页数组
 
+    protected $max_page = 10000;//最大条数
+
 
     /***********筛选条件**************/
     protected $must = array(); //必须匹配
@@ -138,7 +140,8 @@ class Query extends Base
         //获取数据和总数
         $data['data'] = array_column($res['hits']['hits'],'_source');
         if($this->type==2){
-            $data['total'] = $res['hits']['total']['value'];
+
+            $data['total'] = $res['aggregations']['total']['value']>$this->max_page?$this->max_page:$res['aggregations']['total']['value'];
         }
 
 

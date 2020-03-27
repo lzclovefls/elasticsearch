@@ -23,20 +23,42 @@ class Base{
 
     /**
      * 返回错误信息
+     * @param $error_name
      */
     public function returnError($error_name){
 
         $config = self::config('message.'.$error_name);
 
-        exit();
+        exit($config);
 
     }
 
 
     /**
-     *
+     * 返回配置信息
+     * @param $str
+     * @return array|false|string
      */
-    public function config(){
+    public static function config($str){
 
+        $keys = explode('.',$str);
+
+        $configs = file_get_contents('../'.$keys[0].'.php');
+
+        $config = array();
+        switch (count($keys)){
+
+            case 1:
+                $config = $configs;
+                break;
+            case 2:
+                $config = $configs[$keys[1]];
+                break;
+            case 3:
+                $config = $configs[$keys[1]][$keys[2]];
+                break;
+        }
+
+        return $config;
     }
 }

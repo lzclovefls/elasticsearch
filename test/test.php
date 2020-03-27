@@ -16,6 +16,6 @@ $where = array();
 $where[] = array('sid','in',array('1000003060002818300','1100003080470345200'));
 $where[] = array('created_at','<=','2020-03-09 08:46:28');
 
-$res = $client->where($where)->orderBy('created_at')->pageGet(1,2);
+$res = $client->where($where)->orderBy('created_at','desc')->pageGet(2,1);
 
 var_dump($res);
