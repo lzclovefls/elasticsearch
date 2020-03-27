@@ -59,6 +59,12 @@ class Query extends Base
                 case '<=':
                     $range[$item[0]] = ['lte'=>$item[2]];
                     break;
+                case "geo_dist":
+                    $dist['distance'] = $item[2][0];
+                    $dist[$item[0]] = $item[2][1];
+
+                    $where[]["geo_distance"] = $dist;
+                    break;
             }
         }
 
@@ -125,6 +131,25 @@ class Query extends Base
     }
 
 
+    /**
+     * 按距离排序
+     * @param $field
+     * @param $location
+     * @param string $sort_type
+     * @param string $unit
+     */
+    public function orderByGeo($field,$location,$sort_type = 'asc',$unit='m'){
+
+        $sort[$field] = $location;
+        $sort['order'] = $sort_type=='desc'?'desc':'asc';
+        $sort['unit'] = $unit;
+
+        $this->sort['_geo_distance'] = $sort;
+
+        return $this;
+    }
+
+
 
     /**
      * 获取数据
@@ -139,6 +164,19 @@ class Query extends Base
 
         //获取数据和总数
         $data['data'] = array_column($res['hits']['hits'],'_source');
+
+        if(isset($this->sort['_geo_distance'])){
+
+            $sort = array_column($res['hits']['hits'],'sort');
+            //遍历获取距离
+            foreach ($data['data'] as $k=>&$v){
+
+                $v['distance'] = $sort[$k][0];
+            }
+        }
+
+
+
         if($this->type==2){
 
             $data['total'] = $res['aggregations']['total']['value']>$this->max_page?$this->max_page:$res['aggregations']['total']['value'];
@@ -207,6 +245,8 @@ class Query extends Base
         if($this->sort){
             $params['body']['sort'] = $this->sort;
         }
+
+
 
         //判断是否分页获取
         if($this->type==2){
