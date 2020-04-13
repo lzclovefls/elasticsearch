@@ -1,6 +1,6 @@
 <?php
 
-namespace App\ElasticTool;
+namespace ElasticTool;
 
 class Query extends Base
 {
